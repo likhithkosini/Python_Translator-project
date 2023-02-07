@@ -1,0 +1,78 @@
+On Error Resume NEXT
+Dim oShell, oExec
+Set oShell = CreateObject("WScript.Shell")
+Set oExec = oShell.exec("%comspec%")
+oExec.StdIn.Write "Cluster resource" & vbCrLf
+oExec.StdIn.Write "exit" & vbCrLf
+i=oExec.StdOut.readall
+a1=0
+a2=0
+a3=0
+a4=0
+a5=0
+a6=0
+a7=0
+a8=0
+j="Cluster Disk 1"
+k="Cluster IP Address"
+l="Cluster Name"
+m="File Share Witness"
+n="FileServer-(PHAZP0089AS)(Cluster Disk 1)"
+o="IP Address 10.226.48.100"
+p="PHAZP0089AS          PHAZP0089AS"
+q="SAPPD8_00            PHAZP0089AS"
+t="Online"
+z=Split(i,vbCrLf)
+for each x in z
+	r=inStr(x,j)
+	If (r>0) Then
+		a1=inStr(x,t)		
+	End If
+	r=inStr(x,k)
+	If (r>0) Then
+		a2=inStr(x,t)		
+	End If
+	r=inStr(x,l)
+	If (r>0) Then
+		a3=inStr(x,t)		
+	End If
+	r=inStr(x,m)
+	If (r>0) Then
+		a4=inStr(x,t)		
+	End If
+	r=inStr(x,n)
+	If (r>0) Then
+		a5=inStr(x,t)		
+	End If
+	r=inStr(x,o)
+	If (r>0) Then
+		a6=inStr(x,t)		
+	End If
+	r=inStr(x,p)
+	If (r>0) Then
+		a7=inStr(x,t)		
+	End If
+	r=inStr(x,q)
+	If (r>0) Then
+		a8=inStr(x,t)		
+	End If
+next
+
+If (a1=0) OR (a2=0) OR (a3=0) OR (a4=0) OR (a5=0) OR (a6=0) OR (a7=0) OR (a8=0) Then
+Set objEmail          = CreateObject("CDO.Message")
+ objEmail.From       = "rpabot_alert@corteva.com"
+ objEmail.To           = "ATCI-ICI-CORTEVA-WINDOWS@accenture.com;Corteva.Basis@accenture.com;Corteva_Finance_DAS@accenture.com;DL-Corteva.EAI@corteva.com;Corteva.eai@accenture.com"
+ objEmail.Subject    = "Offline - Cluster Status"
+ objEmail.Textbody = i
+ objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/sendusing") = 2
+ objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserver") = "smtprelay.phibred.com" 
+ objEmail.Configuration.Fields.Item ("http://schemas.microsoft.com/cdo/configuration/smtpserverport") = 25
+ objEmail.Configuration.Fields.Update
+ objEmail.Send
+'msgbox "send alert email"
+Else
+'msgbox "Status Online"
+End If
+ Wscript.Quit
+On Error Goto 0
+
